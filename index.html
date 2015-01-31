@@ -13,6 +13,40 @@
 
 <div id="fb-root"></div>
 
+<html>
+<body onload="loadPosts()">
+  <div id="fb-root"></div>
+  <script>
+    var graphURL = "https://graph.facebook.com/chickfila/posts?" +
+                     "callback=processResult&limit=5";
+
+    // Use JSONP to call the Graph API
+    function loadPosts() {
+      var script = document.createElement("script");
+      script.src = graphURL;
+      document.body.appendChild(script);
+    }
+
+    function processResult(posts) {
+      if (posts.paging == undefined) {
+        document.getElementById("loadMore").innerHTML =
+          "No more results";
+      }
+      else {
+        graphURL = posts.paging.next;
+        for (var post in posts.data) {
+          var message = document.createElement("div");
+          message.innerHTML = posts.data[post].message;
+          document.getElementById("content").appendChild(message);
+        }
+      }
+    }
+  </script>
+  <div id="content"></div>
+  <button id="loadMore" onclick="loadPosts()">Load more</button>
+</body>
+</html>
+
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
